@@ -1,12 +1,78 @@
+# macOS
 .DS_Store
-/node_modules/
-*.tsbuildinfo
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dependencies
+node_modules/
+*.pnp
+.pnp.js
+
+# Production builds
+/build/
+/dist/
 
 # React Router
 /.react-router/
-/build/
+
+# TypeScript
+*.tsbuildinfo
+*.d.ts.map
 
 # Cloudflare
 .mf
-.wrangler
+.wrangler/
 .dev.vars*
+wrangler.local.json
+worker-configuration.d.ts
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Temporary folders
+tmp/
+temp/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Vite
+.vite/
