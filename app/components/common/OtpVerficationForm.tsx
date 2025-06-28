@@ -1,13 +1,22 @@
-import { Form, useActionData, useLoaderData, useNavigation } from "react-router"
-import { redirect, type LoaderFunctionArgs, type ActionFunctionArgs } from "react-router"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Form, Link, useActionData, useLoaderData, useNavigation, type LoaderFunctionArgs, type ActionFunctionArgs, redirect } from "react-router"
+import { Button } from "@components/ui/button"
+import { Label } from "@components/ui/label"
 import {
     getAuthSession,
     updateAuthSession,
     clearAuthSession,
     canSendOtp
 } from "@/auth/utils/sessionManager"
+
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSeparator,
+    InputOTPSlot,
+
+} from "@components/ui/input-otp"
+
+import { useEffect, useState } from "react"
 
 // Types for this route's data flows
 interface VerifyOtpLoaderData {
@@ -37,7 +46,6 @@ const API_CONFIG = {
     retries: 2
 }
 
-// Function to send OTP to user's email
 async function sendOtp(email: string, target: string = "signup"): Promise<boolean> {
     try {
         const response = await fetch(`${API_CONFIG.baseUrl}/v1/request_otp`, {
@@ -114,12 +122,12 @@ export async function loader({ request }: LoaderFunctionArgs): Promise<VerifyOtp
 
     // If no email in session, redirect back to email check
     if (!sessionData.email) {
-        throw redirect("/auth")
+        throw redirect("/auth/check-email")
     }
 
     // Validate the email format (defensive programming)
     if (!isValidEmail(sessionData.email)) {
-        throw redirect("/auth")
+        throw redirect("/auth/check-email")
     }
 
     // Check if we can send OTP (rate limiting)
@@ -226,8 +234,7 @@ export async function action({ request }: ActionFunctionArgs): Promise<VerifyOtp
     }
 }
 
-// Component renders the OTP verification interface
-export default function VerifyOtp() {
+export function OtpVerificationForm() {
     const loaderData = useLoaderData<VerifyOtpLoaderData>()
     const actionData = useActionData<VerifyOtpActionData>()
     const navigation = useNavigation()
@@ -239,81 +246,100 @@ export default function VerifyOtp() {
     const hasError = loaderData.error || actionData?.error
     const otpWasSent = loaderData.otpSent && !loaderData.error
 
+
+    // Validate OTP stuff
+    const [timer, setTimer] = useState(0)
+    const [resendCount, setResendCount] = useState(0)
+
+
+
     return (
-        <div className="w-full max-w-md space-y-6">
-            <div className="text-center">
-                <h1 className="text-2xl font-bold">Verify Your Email</h1>
-                <p className="text-muted-foreground">
-                    {otpWasSent
-                        ? `We sent a 6-digit code to ${email}`
-                        : "We'll send you a verification code"
-                    }
-                </p>
-            </div>
-
-            {/* Show error state if OTP couldn't be sent */}
-            {loaderData.error && !loaderData.otpSent && (
-                <div className="text-center space-y-4">
-                    <p className="text-sm text-red-600">
-                        {loaderData.error}
-                    </p>
-                    <Button
-                        onClick={() => window.location.reload()}
-                        variant="outline"
-                        className="w-full"
+        <div className="w-full max-w-md">
+            <h1 className="text-xl font-semibold tracking-tight">
+                We sent you an email
+            </h1>
+            <p className="sm:text-base text-sm text-muted-foreground mt-2">
+                We've sent a 6-digit verification code to{" "}
+                <span className="font-foreground">{email}</span>. Please enter it
+                below. <Button asChild
+                    type="button"
+                    variant="link"
+                    disabled={timer > 0}
+                    className="text-sm p-0 justify-start h-auto sm:text-base"
+                >
+                    <Link
+                        to={changeEmail}
                     >
-                        Try Again
-                    </Button>
-                </div>
-            )}
+                        Change Email
+                    </Link>
+                </Button>
+            </p>
 
-            {/* Show OTP input form if OTP was sent successfully */}
-            {otpWasSent && (
-                <Form method="post" className="space-y-4">
-                    <div>
-                        <Input
-                            type="text"
-                            name="otp"
-                            placeholder="Enter 6-digit code"
-                            maxLength={6}
-                            pattern="[0-9]{6}"
-                            required
-                            disabled={isSubmitting}
-                            className="w-full text-center text-lg tracking-widest"
-                            autoComplete="one-time-code"
-                        />
-                        {/* Display any validation errors */}
-                        {actionData?.error && (
-                            <p className="text-sm text-red-600 mt-1">
-                                {actionData.error}
-                            </p>
-                        )}
-                    </div>
+            <Form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    handleVerify(otp)
+                }}
+                className="mt-6 text-left"
+            >
+                <div className="mb-5 flex flex-col gap-2">
+                    <Label htmlFor="otp" className="text-muted-foreground">Your recovery code</Label>
 
-                    <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={isSubmitting}
+                    <InputOTP
+                        maxLength={6}
+                        value={otp}
+                        onChange={setOtp}
+                        id="otp"
+                        onComplete={handleVerify}
+                        disabled={isProcessing}
                     >
-                        {isSubmitting ? "Verifying..." : "Verify Code"}
-                    </Button>
-                </Form>
-            )}
+                        <InputOTPGroup>
+                            <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                            </InputOTPGroup>
+                            <InputOTPSeparator />
+                            <InputOTPGroup>
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                            </InputOTPGroup>
 
-            {/* Helper text and resend option */}
-            {otpWasSent && (
-                <div className="text-center text-sm text-muted-foreground">
-                    <p>Didn't receive the code?</p>
+                        </InputOTPGroup>
+                    </InputOTP>
                     <Button
+                        type="button"
+                        size={"lg"}
                         variant="link"
-                        className="p-0 h-auto"
-                        onClick={() => window.location.reload()}
-                        disabled={isSubmitting}
+                        className="text-sm p-0 justify-start h-auto pt-2"
+                        onClick={() => handleResendCode}
+                        disabled={timer > 0 || isProcessing}
                     >
-                        Send again
+                        {timer > 0
+                            ? `Resend code in ${timer}s`
+                            : "Didn't receive a code? Resend"}
                     </Button>
                 </div>
-            )}
+
+                <Button size={"lg"} type="submit" className="w-full mt-3" disabled={isProcessing}>
+                    {isProcessing ? "Verifying..." : "Verify Code"}
+                </Button>
+            </Form>
+
+            <Button
+                size={"lg"}
+                type="submit"
+                className="w-full mt-4"
+                variant={"secondary"}
+                asChild
+            >
+                <Link
+                    to={"/auth/login"}
+                >
+                    Back to Login
+                </Link>
+            </Button>
         </div>
     )
 }

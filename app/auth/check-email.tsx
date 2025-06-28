@@ -1,10 +1,10 @@
-import { data, Form, useActionData, useNavigation } from "react-router"
+import { Form, useActionData, useNavigation } from "react-router"
 import { redirect, type LoaderFunctionArgs, type ActionFunctionArgs } from "react-router"
 // import { type Route } from "./+types/check-email"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-
+import { createAuthSession } from "@/auth/utils/sessionManager"
 interface CheckEmailActionData {
     error?: string
     email?: string
@@ -34,17 +34,16 @@ async function checkUserAuthenticationStatus(): Promise<AuthenticationStatus> {
     }
 }
 
-// Simulated email existence check - replace with your actual API call
+// API call to check if email exists
 async function checkEmailExists(email: string): Promise<boolean> {
     const url = `${API_CONFIG.baseUrl}/v1/user/check_email`
-    const requestBody = { email }
 
     const response = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ email }),
         // Add timeout signal to prevent hanging requests
         signal: AbortSignal.timeout(API_CONFIG.timeout)
     })
@@ -177,10 +176,13 @@ export async function action({ request }: ActionFunctionArgs): Promise<CheckEmai
 
     if (emailExists) {
         // Email exists, redirect to login with email pre-filled
-        throw redirect(`/auth/login?email=${encodeURIComponent(email)}`)
+        throw redirect("/auth/login")
     } else {
         // Email doesn't exist, redirect to registration with email pre-filled
-        throw redirect(`/auth/register?email=${encodeURIComponent(email)}`)
+        throw await createAuthSession(
+            { email: email },
+            "/auth/verify-otp"
+        )
     }
 }
 
@@ -212,7 +214,7 @@ export default function CheckEmail() {
                         placeholder="your.name@school.edu"
                         required
                         disabled={isSubmitting}
-                        defaultValue={actionData?.email || ""} //Why does it have a default value?
+                        defaultValue={actionData?.email || ""}
                     />
                     {/* Display any error messages from the action */}
                     {/* I would like this to be removed when the user interacts with the input field */}

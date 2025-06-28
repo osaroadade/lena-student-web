@@ -13,5 +13,11 @@
     "vars": {
         "VALUE_FROM_CLOUDFLARE": "Hello from Cloudflare",
         "API_BASE_URL": "https://test.lena.africa"
-    }
+    },
+    "routes": [
+        {
+            "pattern": "student.lena.africa",
+            "custom_domain": true
+        }
+    ]
 }

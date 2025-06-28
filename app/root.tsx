@@ -11,7 +11,7 @@ import {
 } from "react-router";
 import { getThemeScript } from "@lib/get-theme-script";
 import type { Route } from "./+types/root";
-import { themeCookie } from "@/themeCookie";
+import { themeCookie } from "@/lib/themeCookie";
 import { ThemeProvider, } from "@components/ThemeProvider";
 import "./app.css";
 
