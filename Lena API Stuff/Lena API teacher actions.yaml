@@ -1,0 +1,473 @@
+openapi: 3.0.3
+info:
+  title: Lena API (Teacher Actions Only)
+  version: 1.0.0
+paths:
+  /v1/activities:
+    post:
+      operationId: Create Activity
+      description: Create a new assignment
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      tags:
+      - activities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActivity'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateActivity'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateActivity'
+          description: ''
+  /v1/activities/{id}:
+    put:
+      operationId: Update Activity
+      description: Update an activity by id
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this activity.
+        required: true
+      tags:
+      - activities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateActivity'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateActivity'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateActivity'
+          description: ''
+    patch:
+      operationId: Update Activity (Partial)
+      description: Update an activity by id
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this activity.
+        required: true
+      tags:
+      - activities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateActivity'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateActivity'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+          description: ''
+    delete:
+      operationId: Delete Activity
+      description: Delete an activity
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this activity.
+        required: true
+      tags:
+      - activities
+      responses:
+        '204':
+          description: No response body
+  /v1/announcements:
+    post:
+      operationId: Create Announcement
+      description: Create a new announcement
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - announcements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAnnouncement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateAnnouncement'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAnnouncement'
+          description: ''
+  /v1/announcements/{id}:
+    put:
+      operationId: Update Announcement
+      description: Update an announcement
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - announcements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAnnouncement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateAnnouncement'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAnnouncement'
+          description: ''
+    patch:
+      operationId: Update Announcement (Partial)
+      description: Update an announcement
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - announcements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAnnouncement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAnnouncement'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadAnnouncement'
+          description: ''
+    delete:
+      operationId: Delete Announcement
+      description: Delete an announcement
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this announcement.
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - announcements
+      responses:
+        '204':
+          description: No response body
+  /v1/assignments:
+    post:
+      operationId: Create Assignment
+      description: Create a new assignment
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateAssignment'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAssignment'
+          description: ''
+  /v1/assignments/{id}:
+    put:
+      operationId: Update Assignment
+      description: Update an assignment by id
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this assignment.
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateAssignment'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    patch:
+      operationId: Update Assignment (Partial)
+      description: Update an assignment by id
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this assignment.
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateAssignment'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    delete:
+      operationId: Delete Assignment
+      description: Delete an assignment
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: string
+        description: Token used to authenticate <b>teacher</b>
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this assignment.
+        required: true
+      - in: header
+        name: teacher
+        schema:
+          type: string
+          format: uuid
+        description: The teacher id
+        required: true
+      tags:
+      - assignments
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    CreateActivity:
+      type: object
+      properties:
+        // ... define as in original ...
+    UpdateActivity:
+      type: object
+      properties:
+        // ... define as in original ...
+    PatchedUpdateActivity:
+      type: object
+      properties:
+        // ... define as in original ...
+    Activity:
+      type: object
+      properties:
+        // ... define as in original ...
+    CreateAnnouncement:
+      type: object
+      properties:
+        // ... define as in original ...
+    UpdateAnnouncement:
+      type: object
+      properties:
+        // ... define as in original ...
+    PatchedUpdateAnnouncement:
+      type: object
+      properties:
+        // ... define as in original ...
+    ReadAnnouncement:
+      type: object
+      properties:
+        // ... define as in original ...
+    CreateAssignment:
+      type: object
+      properties:
+        // ... define as in original ...
+    UpdateAssignment:
+      type: object
+      properties:
+        // ... define as in original ...
+    PatchedUpdateAssignment:
+      type: object
+      properties:
+        // ... define as in original ...
+    Assignment:
+      type: object
+      properties:
+        // ... define as in original ... 
