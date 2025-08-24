@@ -1,31 +1,39 @@
 // Cloudflare Pages Function for React Router v7 SSR
-// Temporarily disable SSR and serve static files only
+// Serve in SPA mode - let Cloudflare Pages handle static files
 export const onRequest = async (context) => {
   try {
     console.log('🚀 Function called for:', context.request.url);
     
-    // For now, let's just serve the client-side app
     const url = new URL(context.request.url);
     
-    // If it's a static asset request, let it pass through
-    if (url.pathname.startsWith('/assets/')) {
+    // Let static assets pass through to Cloudflare Pages static serving
+    if (url.pathname.startsWith('/assets/') || 
+        url.pathname === '/favicon.ico' ||
+        url.pathname.endsWith('.js') ||
+        url.pathname.endsWith('.css') ||
+        url.pathname.endsWith('.png') ||
+        url.pathname.endsWith('.svg')) {
       return context.next();
     }
     
     // For all other requests, serve the index.html (SPA mode)
     console.log('📄 Serving SPA fallback for:', url.pathname);
-    const indexResponse = await context.env.ASSETS.fetch(new URL('/index.html', url.origin));
+    
+    // Fetch the index.html from the static files
+    const indexUrl = new URL('/index.html', context.request.url);
+    const indexResponse = await fetch(indexUrl.toString());
     
     if (indexResponse.ok) {
-      return new Response(indexResponse.body, {
+      const html = await indexResponse.text();
+      return new Response(html, {
         headers: {
-          'Content-Type': 'text/html',
+          'Content-Type': 'text/html; charset=utf-8',
           'Cache-Control': 'no-cache'
         }
       });
     }
     
-    return new Response('Page not found', { status: 404 });
+    return new Response('Index file not found', { status: 404 });
     
   } catch (error) {
     console.error('❌ Function error:', error);
