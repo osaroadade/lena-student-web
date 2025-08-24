@@ -1,30 +1,31 @@
 // Cloudflare Pages Function for React Router v7 SSR
-import { createPagesFunctionHandler } from "@react-router/cloudflare";
-
+// Temporarily disable SSR and serve static files only
 export const onRequest = async (context) => {
   try {
     console.log('🚀 Function called for:', context.request.url);
     
-    const handler = createPagesFunctionHandler({
-      build: () => {
-        console.log('📦 Loading server build...');
-        return import("../build/server/index.js");
-      },
-      getLoadContext(context) {
-        console.log('🔧 Creating load context...');
-        return {
-          // Make Cloudflare context available to loaders/actions
-          cloudflare: {
-            env: context.env,
-          },
-        };
-      },
-    });
+    // For now, let's just serve the client-side app
+    const url = new URL(context.request.url);
     
-    console.log('✅ Handler created, processing request...');
-    const response = await handler(context);
-    console.log('🎉 Response ready:', response.status);
-    return response;
+    // If it's a static asset request, let it pass through
+    if (url.pathname.startsWith('/assets/')) {
+      return context.next();
+    }
+    
+    // For all other requests, serve the index.html (SPA mode)
+    console.log('📄 Serving SPA fallback for:', url.pathname);
+    const indexResponse = await context.env.ASSETS.fetch(new URL('/index.html', url.origin));
+    
+    if (indexResponse.ok) {
+      return new Response(indexResponse.body, {
+        headers: {
+          'Content-Type': 'text/html',
+          'Cache-Control': 'no-cache'
+        }
+      });
+    }
+    
+    return new Response('Page not found', { status: 404 });
     
   } catch (error) {
     console.error('❌ Function error:', error);
