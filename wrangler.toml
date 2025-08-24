@@ -1,0 +1,6 @@
+name = "lena-student-web"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# This tells wrangler this is for Pages, not Workers
+pages_build_output_dir = "./build/client"
