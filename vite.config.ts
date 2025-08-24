@@ -4,11 +4,9 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [
-    tailwindcss(), 
-    reactRouter({
-      cloudflare: true, // This enables Cloudflare Pages compatibility
-    }), 
-    tsconfigPaths()
-  ],
+    plugins: [
+        tailwindcss(),
+        reactRouter(),
+        tsconfigPaths()
+    ],
 });
