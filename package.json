@@ -8,7 +8,10 @@
     "start": "npx @react-router/serve ./build/server/index.js",
     "typecheck": "npx @react-router/dev typegen && tsc",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:dev": "npm run build && wrangler deploy --env dev",
+    "workers:dev": "npm run build && wrangler dev"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
