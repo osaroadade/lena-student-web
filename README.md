@@ -108,7 +108,7 @@ features/auth/
 - **ESLint + TypeScript** - Code quality and type checking
 
 ### Deployment
-- **Node.js** - Server runtime
+- **Cloudflare Workers** - Edge runtime with SSR support
 
 ## 💻 Development Practices
 
@@ -293,32 +293,77 @@ npm run test -- tests/features/auth/
 
 ## 🚀 Deployment
 
-### Platform Support
+### Cloudflare Workers
 
-Compatible with any Node.js hosting platform:
-- Digital Ocean App Platform
-- Railway
-- Fly.io
-- Vercel
-- Netlify
-- Heroku
+This application is optimized for deployment on **Cloudflare Workers** with server-side rendering (SSR) support.
+
+#### Production Deployment
+
+```bash
+# Build and deploy to production
+npm run build
+npx wrangler deploy
+```
+
+#### Development Commands
+
+```bash
+# Local development with SSR
+npm run dev
+
+# Local development with Workers runtime
+npm run dev:wrangler
+
+# Build for production
+npm run build
+```
 
 ### Environment Variables
 
-Required environment variables for production:
+#### Non-sensitive Variables (in `wrangler.jsonc`)
+
+```json
+{
+  "vars": {
+    "NODE_ENV": "production"
+  }
+}
+```
+
+#### Sensitive Variables (Wrangler Secrets)
+
+For sensitive data like API URLs, use Wrangler secrets:
 
 ```bash
-# API Configuration
-API_BASE_URL=https://api.example.com
-API_KEY=your-api-key
+# Set API URL as a secret (recommended for private APIs)
+npx wrangler secret put VITE_LENA_API_URL
 
-# Session Configuration
-SESSION_SECRET=your-session-secret
-SESSION_MAX_AGE=86400
-
-# Feature Flags
-NODE_ENV=production
+# Set other secrets as needed
+npx wrangler secret put DATABASE_URL
+npx wrangler secret put STRIPE_SECRET_KEY
 ```
+
+#### Managing Secrets
+
+```bash
+# List all secrets (names only, not values)
+npx wrangler secret list
+
+# Update a secret (works for both new and existing)
+npx wrangler secret put SECRET_NAME
+
+# Delete a secret
+npx wrangler secret delete SECRET_NAME
+```
+
+### Why Cloudflare Workers?
+
+- ✅ **Edge Performance**: Deploy globally with 0ms cold starts
+- ✅ **SSR Support**: Full React Router v7 server-side rendering
+- ✅ **Secure Secrets**: Built-in secrets management
+- ✅ **Cost Effective**: Generous free tier, pay-per-request
+- ✅ **TypeScript Support**: Native TypeScript runtime
+- ✅ **Global CDN**: Static assets served from edge locations
 
 ## 🤝 Contributing
 

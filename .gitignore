@@ -1,13 +1,21 @@
 .DS_Store
 /node_modules/
+*.tsbuildinfo
 
 # React Router
 /.react-router/
 /build/
-/project-docs
-.vite
 
 # AI helpers
 /warp.*
+
+# Environment variables
 .env
 .env.production
+/project-docs
+
+# Cloudflare
+.mf
+.wrangler
+.dev.vars*
+worker-configuration.d.ts
