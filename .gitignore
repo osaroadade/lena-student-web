@@ -7,15 +7,15 @@
 /build/
 
 # AI helpers
-/warp.*
+# /warp.*
+# /project-docs
 
 # Environment variables
 .env
 .env.production
-/project-docs
 
 # Cloudflare
 .mf
 .wrangler
 .dev.vars*
-worker-configuration.d.ts
+# worker-configuration.d.ts
