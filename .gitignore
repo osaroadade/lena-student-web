@@ -5,6 +5,7 @@
 /.react-router/
 /build/
 /project-docs
+.vite
 
 # AI helpers
 /warp.*
