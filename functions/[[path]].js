@@ -7,9 +7,6 @@ export const onRequest = createPagesFunctionHandler({
     return {
       // Make Cloudflare context available to loaders/actions
       cloudflare: {
-        cf: context.request.cf,
-        ctx: context,
-        caches,
         env: context.env,
       },
     };

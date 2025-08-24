@@ -4,3 +4,8 @@ compatibility_flags = ["nodejs_compat"]
 
 # This tells wrangler this is for Pages, not Workers
 pages_build_output_dir = "./build/client"
+
+# Environment variables
+[vars]
+NODE_ENV = "development"
+VITE_LENA_API_URL = "https://test.lena.africa"
