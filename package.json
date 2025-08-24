@@ -5,10 +5,6 @@
   "scripts": {
     "build": "npx @react-router/dev build",
     "dev": "npx @react-router/dev dev",
-    "dev:wrangler": "npx wrangler dev",
-    "deploy": "npm run build && npx wrangler deploy",
-    "deploy:dev": "npm run build && npx wrangler deploy --env development",
-    "deploy:prod": "npm run build && npx wrangler deploy --env production",
     "start": "npx @react-router/serve ./build/server/index.js",
     "typecheck": "npx @react-router/dev typegen && tsc",
     "test": "vitest",
