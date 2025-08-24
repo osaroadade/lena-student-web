@@ -1,0 +1,21 @@
+# Cloudflare Pages Functions Configuration
+# Alternative to Workers - for testing Pages deployment
+# Use: npx wrangler pages deploy build/client --config wrangler.toml
+
+name = "lena-student-web-pages"
+compatibility_date = "2025-04-04"
+
+[env.production]
+name = "lena-student-web-pages"
+
+[env.production.vars]
+NODE_ENV = "production"
+
+# Secrets should be set via: wrangler pages secret put VITE_LENA_API_URL --project-name=lena-student-web-pages
+# Example:
+# npx wrangler pages secret put VITE_LENA_API_URL --project-name=lena-student-web-pages
+
+# Pages Functions directory structure:
+# functions/
+#   └── [[path]].ts  # Catch-all function for SSR
+#   └── _middleware.ts (optional)

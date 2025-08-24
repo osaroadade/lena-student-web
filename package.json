@@ -11,7 +11,10 @@
     "test:watch": "vitest --watch",
     "deploy": "npm run build && wrangler deploy",
     "deploy:dev": "npm run build && wrangler deploy --env dev",
-    "workers:dev": "npm run build && wrangler dev"
+    "workers:dev": "npm run build && wrangler dev",
+    "pages:deploy": "npm run build && wrangler pages deploy build/client --config wrangler.toml",
+    "pages:dev": "npm run build && wrangler pages dev build/client --config wrangler.toml",
+    "pages:secret": "wrangler pages secret put"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
