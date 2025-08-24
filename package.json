@@ -13,7 +13,6 @@
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@react-router/dev": "^7.7.1",
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
     "class-variance-authority": "^0.7.1",
@@ -28,6 +27,7 @@
     "zod": "^4.1.0"
   },
   "devDependencies": {
+    "@react-router/dev": "^7.7.1",
     "@tailwindcss/vite": "^4.1.4",
     "@types/cookie": "^0.6.0",
     "@types/node": "^20",
