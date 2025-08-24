@@ -2,7 +2,18 @@
 import { createRequestHandler } from "@react-router/cloudflare";
 import * as build from "../build/server/index.js";
 
-const handler = createRequestHandler({ build });
+const handler = createRequestHandler({
+  build,
+  getLoadContext(context) {
+    return {
+      cloudflare: {
+        cf: context.request.cf,
+        env: context.env,
+        ctx: context.ctx,
+      },
+    };
+  },
+});
 
 export default {
   async fetch(request, env, ctx) {
@@ -22,18 +33,13 @@ export default {
         console.log('📦 Serving static asset:', url.pathname);
         
         // Workers will automatically serve these from the assets directory
-        // Just return null to let Workers handle it
         return env.ASSETS.fetch(request);
       }
       
       // Handle all other requests with React Router SSR
-      console.log('🎭 Processing SSR for:', url.pathname);
+      console.log('🌭 Processing SSR for:', url.pathname);
       
-      return await handler(request, {
-        ...env,
-        // Make Cloudflare context available to loaders/actions  
-        CF_CONTEXT: { env, ctx },
-      });
+      return await handler(request, env, ctx);
       
     } catch (error) {
       console.error('❌ Worker error:', error);
